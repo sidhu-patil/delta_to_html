@@ -1,56 +1,55 @@
 # Delta_To_HTML
 
-A portable Markdown library written in Dart.
-It help to convert Delta To HTML .
+This library helps you to convert Delta to HTML. Based on [Flutter_Quill](https://pub.dev/packages/flutter_quill) Delta 
 
-### Usage
+[ currently in under development ]
+
+
+## Usage
 
 ```dart
-import 'package:delta_markdown/delta_markdown.dart';
+import 'package:delta_to_html/delta_to_html.dart';
 
 void main() {
 
-  const delta =
-      r'[{"insert":"Hello "},{"insert":"Markdown","attributes":{"bold":true}},{"insert":"\n"}]';
-  // print(deltaToHTML(delta));
-  print(DeltaToHTML.encodeJson(delta));
+  List  rawDelta = [{"insert":"Hello "},{"insert":"HTML","attributes":{"bold":true}}];
+  print(DeltaToHTML.encodeJson(rawDelta));
+
+  List deltaJson = quillController.document.toDelta().toJson();
+  print(DeltaToHTML.encodeJson(deltaJson));
   
 }
 ```
 
-### Supports
-
+## Supported
 Currently, these elements are supported:
+  - Bold
+  - Italic
+  - Underline
+  - Background Color
+  - Color
+  - Font
+  - Size
+  - Strikethrough
+  - Image
+  - Video
+  - Link
+  - Inline Code
 
-- Bold
-- Italic
-- Link
-- Blockquote
-- Header
-- List
-- Code Block
-- Image
-- Horizontal Rule
+## Under Development
+Support for these elements will be added soon::
+  - Blockquote
+  - Text Alignment
+  - Header
+  - List
+  - Code Block
+  - Indent
 
-Does not support the following elements, because Markdown does not support them:
 
-- Background Color
-- Color
-- Font
-- Size
-- Strikethrough
-- Superscript/Subscript
-- Underline
-- Text Alignment
-- Text Direction
-- Formula
-- Video
-
+## Not Supported
 Does not support the following elements, because flutter_quill does not support them:
-- Inline Code
+  - Horizontal Rule
+  - Superscript/Subscript
+  - Text Direction
+  - Formula
 
-### Known limits
-Support for these elements must be implemented:
-- Indent
-
-There are only a few tests so far, so the functionality is not yet guaranteed in complex cases.
