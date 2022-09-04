@@ -35,9 +35,6 @@ Currently, these elements are supported:
   - Video
   - Link
   - Inline Code
-
-## Under Development
-Support for these elements will be added soon::
   - Blockquote
   - Text Alignment
   - Header
@@ -51,5 +48,7 @@ Does not support the following elements, because flutter_quill does not support 
   - Horizontal Rule
   - Superscript/Subscript
   - Text Direction
+
+Does not support the following elements, because few problem occurs with delta output:
   - Formula
 
