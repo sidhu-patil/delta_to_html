@@ -41,13 +41,13 @@ Currently, these elements are supported:
   - List
   - Code Block
   - Indent
-
+  - Text Direction
 
 ## Not Supported
 Does not support the following elements, because flutter_quill does not support them:
   - Horizontal Rule
   - Superscript/Subscript
-  - Text Direction
+
 
 Does not support the following elements, because few problem occurs with delta output:
   - Formula

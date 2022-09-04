@@ -2,149 +2,179 @@ import 'dart:convert';
 
 encoder(List delta) {
   var html = '';
-  String prevTextValue = '';
+  String prevText = '';
 
-  List<Map<String, dynamic>> rawDelta = (delta as List<Map<String, dynamic>>) +
-      [
-        {'insert': ''}
-      ];
+  //! End Loop Implementation
+  delta.add({'insert': ' '});
 
-  for (var element in rawDelta) {
+  for (var element in delta) {
+    //! Embeded Implementation
     if (element['insert'].runtimeType.toString() ==
         '_InternalLinkedHashMap<String, dynamic>') {
+      //~ Image Implementation
       if (element['insert'].containsKey('image')) {
         String imageLink = element['insert']['image'].toString();
         if (element.containsKey('attributes')) {
           String style = element['attributes']['style']
               .toString()
               .replaceAll('mobile', '')
-              .replaceAll(':', '="')
-              .replaceAll(';', '"')
+              .replaceAll(':', "='")
+              .replaceAll(';', "'")
               .toLowerCase();
           html += "<img src='$imageLink' $style>";
         } else {
           html += "<img src='$imageLink'>";
         }
+
+        //~ Video Implementation
       } else if (element['insert'].containsKey('video')) {
         String videoLink = element['insert']['image'].toString();
         html += "<embed type='video/webm' src='$videoLink'>";
       }
     } else {
-      if (element.containsKey('attributes')) {
-        String textValue = element['insert'].toString();
-        var attributes = Map.from(element['attributes'] as Map);
-        attributes.forEach((key, v) {
-          switch (key.toString()) {
-            // Inline
-            case "color":
-              prevTextValue =
-                  "$prevTextValue<span style='color:$v'>$textValue</span>";
-              break;
-            case "background":
-              prevTextValue =
-                  "$prevTextValue<span style='background-color:$v'>$textValue</span>";
-              break;
-            case "bold":
-              prevTextValue = "$prevTextValue<b>$textValue</b>";
-              break;
-            case "italic":
-              prevTextValue = "$prevTextValue<i>$textValue</i>";
-              break;
-            case "underline":
-              prevTextValue = "$prevTextValue<u>$textValue</u>";
-              break;
-            case "strike":
-              prevTextValue = "$prevTextValue<s>$textValue</s>";
-              break;
+      //! Rich Text Implementation
 
-            case "code":
-              prevTextValue =
-                  "$prevTextValue<code style='color:#e1103a; background-color:#f1f1f1; padding: 0px 4px;'>$textValue</code>";
-              break;
-
-            case "size":
-              switch (v) {
-                case "small":
-                  prevTextValue = "$prevTextValue<small>$textValue</small>";
-                  break;
-                case "large":
-                  prevTextValue = "$prevTextValue<big>$textValue</big>";
-                  break;
-                case "huge":
-                  prevTextValue =
-                      "$prevTextValue<span style='font-size:150%'>$textValue</span>";
-                  break;
-              }
-              break;
-
-            case "font":
-              prevTextValue =
-                  "$prevTextValue<span style='font-family:$v'>$textValue</span>";
-              break;
-
-            case "link":
-              prevTextValue = "$prevTextValue<a href='$v'>$textValue</a>";
-              break;
-
-            //  Block
-            case "align":
-              prevTextValue =
-                  "<span style='text-align:$v'>$prevTextValue</span>";
-              break;
-
-            case "header":
-              prevTextValue = "<h$v>$prevTextValue</h$v>";
-              break;
-
-            case "code-block":
-              prevTextValue =
-                  "<pre><code style='color:#3F51B5; background-color:#f1f1f1; padding: 0px 4px;'>$prevTextValue</code></pre>";
-              break;
-            case "blockquote":
-              prevTextValue = "<blockqoute>$prevTextValue</blockqoute>";
-              break;
-
-            case "indent":
-              prevTextValue = "<p>${'&emsp;' * v} $prevTextValue</p>";
-              break;
-
-            case "list":
-              switch (v) {
-                case "ordered":
-                  prevTextValue = "<ol><li>$prevTextValue</li></ol>";
-                  break;
-                case "bullet":
-                  prevTextValue = "<ul><li>$prevTextValue</li></ul>";
-                  break;
-                case "checked":
-                  prevTextValue =
-                      "<input type='checkbox' checked><lable>$prevTextValue</label><br>";
-                  break;
-                case "unchecked":
-                  prevTextValue =
-                      "<input type='checkbox' ><lable>$prevTextValue</label><br>";
-                  break;
-              }
-              break;
-          }
-
-          html += prevTextValue;
-          if (textValue.contains('\n')) {
-            var textList = textValue.split('\n');
-            html += textList[0];
-            prevTextValue = textList[1];
-          } else {
-            prevTextValue = '';
-          }
-        });
-      } else {
-        html += prevTextValue;
-        if (element['insert'].toString().contains('\n')) {
-          var textList = element['insert'].toString().split('\n');
-          html += textList[0];
-          prevTextValue = textList[1];
+      //~ Normal Text Implementation
+      if (!element.containsKey('attributes')) {
+        html += prevText;
+        String currentText = element['insert'].toString();
+        if (currentText.contains('\n')) {
+          List currentTextList = currentText.split('\n');
+          html += currentTextList[0];
+          currentTextList.remove(currentTextList[0]);
+          prevText = '<br>${currentTextList.join("<br>")}';
         } else {
-          prevTextValue = element['insert'].toString();
+          // html += ;
+          prevText = currentText;
+        }
+      } else {
+        List blockElements = [
+          'header',
+          'align',
+          'direction',
+          'list',
+          'blockqoute',
+          'code-block',
+          'indent'
+        ];
+        String currentText = element['insert'].toString();
+        Map currentAttributeMap = element['attributes'] as Map;
+
+        //~ Inline Text Implementation
+        if (!blockElements.contains(currentAttributeMap.keys.first)) {
+          html += prevText;
+          currentAttributeMap.forEach((key, value) {
+            switch (key.toString()) {
+              case "color":
+                currentText = "<span style='color:$value'>$currentText</span>";
+                break;
+              case "background":
+                currentText =
+                    "<span style='background-color:$value'>$currentText</span>";
+                break;
+              case "font":
+                currentText =
+                    "<span style='font-family:$value'>$currentText</span>";
+                break;
+
+              case "bold":
+                currentText = "<b>$currentText</b>";
+                break;
+              case "italic":
+                currentText = "<i>$currentText</i>";
+                break;
+              case "underline":
+                currentText = "<u>$currentText</u>";
+                break;
+              case "strike":
+                currentText = "<s>$currentText</s>";
+                break;
+
+              case "size":
+                switch (value) {
+                  case "small":
+                    currentText = "<small>$currentText</small>";
+                    break;
+                  case "large":
+                    currentText = "<big>$currentText</big>";
+                    break;
+                  case "huge":
+                    currentText =
+                        "<span style='font-size:150%'>$currentText</span>";
+                    break;
+                }
+                break;
+
+              case "link":
+                currentText = "<a href='$value'>$currentText</a>";
+                break;
+
+              case "code":
+                currentText =
+                    "<code style='color:#e1103a; background-color:#f1f1f1; padding: 0px 4px;'>$currentText</code>";
+                break;
+              default:
+            }
+          });
+          prevText = currentText;
+        } else {
+          //~ Block Text Implementation
+          currentAttributeMap.forEach((key, value) {
+            switch (key.toString()) {
+              case "header":
+                currentText =
+                    "<h$value>${prevText.replaceAll('<br>', '')}</h$value>";
+                break;
+
+              case "align":
+                currentText =
+                    "<p style='text-align:$value'>${prevText.replaceAll('<br>', '')}</p>";
+                break;
+
+              case "direction":
+                currentText =
+                    "<p style='direction:$value'>${prevText.replaceAll('<br>', '')}</p>";
+                break;
+
+              case "code-block":
+                currentText =
+                    "<pre><code style='color:#3F51B5; background-color:#f1f1f1; padding: 0px 4px;'>${prevText.replaceAll('<br>', '')}</code></pre>";
+                break;
+
+              case "blockquote":
+                currentText =
+                    "<blockqoute>${prevText.replaceAll('<br>', '')}</blockqoute>";
+                break;
+
+              case "indent":
+                currentText =
+                    "<p>${'&emsp;' * value} ${prevText.replaceAll('<br>', '')}</p>";
+                break;
+
+              case "list":
+                switch (value) {
+                  case "ordered":
+                    currentText =
+                        "<ol><li>${prevText.replaceAll('<br>', '')}</li></ol>";
+                    break;
+                  case "bullet":
+                    currentText =
+                        "<ul><li>${prevText.replaceAll('<br>', '')}</li></ul>";
+                    break;
+                  case "checked":
+                    currentText =
+                        "<input type='checkbox' checked><label>${prevText.replaceAll('<br>', '')}</label><br>";
+                    break;
+                  case "unchecked":
+                    currentText =
+                        "<input type='checkbox' ><label>${prevText.replaceAll('<br>', '')}</label><br>";
+                    break;
+                }
+                break;
+            }
+          });
+          html += currentText;
+          prevText = '';
         }
       }
     }

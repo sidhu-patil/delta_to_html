@@ -1,5 +1,5 @@
 name: delta_to_html
-version: 0.1.5
+version: 0.1.6
 
 description: This library helps you to convert Delta to HTML. Based on Flutter_Quill Delta 
 homepage: https://github.com/secanonm/delta_to_html
