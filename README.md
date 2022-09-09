@@ -43,6 +43,16 @@ Currently, these elements are supported:
   - Indent
   - Text Direction
 
+## Problematics Elements
+Currently, these elements are have few multiple style property problem due to flutter_quill delta output we will fixed this as soon as posible:
+  - Blockquote
+  - Text Alignment
+  - Header
+  - List
+  - Code Block
+  - Indent
+  - Text Direction
+
 ## Not Supported
 Does not support the following elements, because flutter_quill does not support them:
   - Horizontal Rule

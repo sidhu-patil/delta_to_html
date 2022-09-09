@@ -29,4 +29,3 @@
 .pub-cache/
 .pub/
 build/
-lib/test.dart

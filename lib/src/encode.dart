@@ -1,12 +1,14 @@
 import 'dart:convert';
+import 'dart:developer';
 
 encoder(List delta) {
-  var html = '';
+  var html = "";
   String prevText = '';
 
   //! End Loop Implementation
   delta.add({'insert': ' '});
 
+  log(jsonEncode(delta), name: 'Delta');
   for (var element in delta) {
     //! Embeded Implementation
     if (element['insert'].runtimeType.toString() ==
@@ -180,5 +182,5 @@ encoder(List delta) {
     }
   }
 
-  return jsonEncode(html);
+  return html;
 }

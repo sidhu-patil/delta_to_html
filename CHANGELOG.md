@@ -1,3 +1,6 @@
+## 0.1.7
+- Remove unwanted dependency.
+
 ## 0.1.6
 - Add Support of `Text Direction` Elements.
 
