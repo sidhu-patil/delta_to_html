@@ -1,18 +1,12 @@
-import 'dart:convert';
-import 'dart:developer';
-
 encoder(List delta) {
-  var html = "";
-  String prevText = '';
+  StringBuffer html = StringBuffer();
 
   //! End Loop Implementation
   delta.add({'insert': ' '});
 
-  log(jsonEncode(delta), name: 'Delta');
   for (var element in delta) {
-    //! Embeded Implementation
-    if (element['insert'].runtimeType.toString() ==
-        '_InternalLinkedHashMap<String, dynamic>') {
+    //! Embedded Implementation
+    if (element['insert'].runtimeType is Map<String, dynamic>) {
       //~ Image Implementation
       if (element['insert'].containsKey('image')) {
         String imageLink = element['insert']['image'].toString();
@@ -23,39 +17,29 @@ encoder(List delta) {
               .replaceAll(':', "='")
               .replaceAll(';', "'")
               .toLowerCase();
-          html += "<img src='$imageLink' $style>";
+          html.write("<img src='$imageLink' $style>");
         } else {
-          html += "<img src='$imageLink'>";
+          html.write("<img src='$imageLink'>");
         }
 
         //~ Video Implementation
       } else if (element['insert'].containsKey('video')) {
         String videoLink = element['insert']['image'].toString();
-        html += "<embed type='video/webm' src='$videoLink'>";
+        html.write("<embed type='video/webm' src='$videoLink'>");
       }
     } else {
       //! Rich Text Implementation
 
       //~ Normal Text Implementation
       if (!element.containsKey('attributes')) {
-        html += prevText;
-        String currentText = element['insert'].toString();
-        if (currentText.contains('\n')) {
-          List currentTextList = currentText.split('\n');
-          html += currentTextList[0];
-          currentTextList.remove(currentTextList[0]);
-          prevText = '<br>${currentTextList.join("<br>")}';
-        } else {
-          // html += ;
-          prevText = currentText;
-        }
+        html.write(element['insert'].toString());
       } else {
         List blockElements = [
           'header',
           'align',
           'direction',
           'list',
-          'blockqoute',
+          'blockquote',
           'code-block',
           'indent'
         ];
@@ -64,7 +48,6 @@ encoder(List delta) {
 
         //~ Inline Text Implementation
         if (!blockElements.contains(currentAttributeMap.keys.first)) {
-          html += prevText;
           currentAttributeMap.forEach((key, value) {
             switch (key.toString()) {
               case "color":
@@ -118,69 +101,79 @@ encoder(List delta) {
               default:
             }
           });
-          prevText = currentText;
+          html.write(currentText);
         } else {
           //~ Block Text Implementation
+          String rawHtml = html.toString();
+          String blockString = '';
+          if (rawHtml.contains('\\Þ')) {
+            List dumpyStringList = rawHtml.split('\\Þ');
+            blockString = dumpyStringList.last;
+            dumpyStringList.removeLast();
+            String dumpyString = dumpyStringList.join();
+            html.clear();
+            html.write(dumpyString);
+          } else {
+            List dumpyStringList = rawHtml.split('\n');
+            blockString = dumpyStringList.last;
+            dumpyStringList.removeLast();
+            String dumpyString = dumpyStringList.join('\n');
+            html.clear();
+            html.write(dumpyString);
+          }
+
           currentAttributeMap.forEach((key, value) {
             switch (key.toString()) {
               case "header":
-                currentText =
-                    "<h$value>${prevText.replaceAll('<br>', '')}</h$value>";
+                currentText = "<h$value>$blockString</h$value>";
                 break;
 
               case "align":
-                currentText =
-                    "<p style='text-align:$value'>${prevText.replaceAll('<br>', '')}</p>";
+                currentText = "<p style='text-align:$value'>$blockString</p>";
                 break;
 
               case "direction":
-                currentText =
-                    "<p style='direction:$value'>${prevText.replaceAll('<br>', '')}</p>";
+                currentText = "<p style='direction:$value'>$blockString</p>";
                 break;
 
               case "code-block":
                 currentText =
-                    "<pre><code style='color:#3F51B5; background-color:#f1f1f1; padding: 0px 4px;'>${prevText.replaceAll('<br>', '')}</code></pre>";
+                    "<pre><code style='color:#3F51B5; background-color:#f1f1f1; padding: 0px 4px;'>$blockString</code></pre>";
                 break;
 
               case "blockquote":
-                currentText =
-                    "<blockqoute>${prevText.replaceAll('<br>', '')}</blockqoute>";
+                currentText = "<blockquote>$blockString</blockquote>";
                 break;
 
               case "indent":
-                currentText =
-                    "<p>${'&emsp;' * value} ${prevText.replaceAll('<br>', '')}</p>";
+                currentText = "<p>${'&emsp;' * value} $blockString</p>";
                 break;
 
               case "list":
                 switch (value) {
                   case "ordered":
-                    currentText =
-                        "<ol><li>${prevText.replaceAll('<br>', '')}</li></ol>";
+                    currentText = "<ol><li>$blockString</li></ol>";
                     break;
                   case "bullet":
-                    currentText =
-                        "<ul><li>${prevText.replaceAll('<br>', '')}</li></ul>";
+                    currentText = "<ul><li>$blockString</li></ul>";
                     break;
                   case "checked":
                     currentText =
-                        "<input type='checkbox' checked><label>${prevText.replaceAll('<br>', '')}</label><br>";
+                        "<input type='checkbox' checked><label>$blockString</label><br>";
                     break;
                   case "unchecked":
                     currentText =
-                        "<input type='checkbox' ><label>${prevText.replaceAll('<br>', '')}</label><br>";
+                        "<input type='checkbox' ><label>$blockString</label><br>";
                     break;
                 }
                 break;
             }
           });
-          html += currentText;
-          prevText = '';
+          html.write('$currentText\\Þ');
         }
       }
     }
   }
 
-  return html;
+  return html.toString().replaceAll('\\Þ', '').replaceAll('\n', '<br>');
 }

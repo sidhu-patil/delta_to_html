@@ -6,10 +6,9 @@ void main() {
   List delta = [
     {"insert": "Hello "},
     {
-      "insert": "Markdown",
+      "insert": "World",
       "attributes": {"bold": true}
-    },
-    {"insert": "\n"}
+    }
   ];
   print(DeltaToHTML.encodeJson(delta));
 }

@@ -1,3 +1,6 @@
+## 0.2.0
+- Stable Version.
+
 ## 0.1.7
 - Remove unwanted dependency.
 

@@ -1,9 +1,6 @@
 # Delta_To_HTML
 
-This library helps you to convert Delta to HTML. Based on [Flutter_Quill](https://pub.dev/packages/flutter_quill) Delta 
-
-[ currently in under development ]
-
+This library helps you to convert Delta to HTML.
 
 ## Usage
 
@@ -30,7 +27,7 @@ Currently, these elements are supported:
   - Color
   - Font
   - Size
-  - Strikethrough
+  - Strike
   - Image
   - Video
   - Link
@@ -43,15 +40,6 @@ Currently, these elements are supported:
   - Indent
   - Text Direction
 
-## Problematics Elements
-Currently, these elements are have few multiple style property problem due to flutter_quill delta output we will fixed this as soon as posible:
-  - Blockquote
-  - Text Alignment
-  - Header
-  - List
-  - Code Block
-  - Indent
-  - Text Direction
 
 ## Not Supported
 Does not support the following elements, because flutter_quill does not support them:
@@ -59,6 +47,6 @@ Does not support the following elements, because flutter_quill does not support 
   - Superscript/Subscript
 
 
-Does not support the following elements, because few problem occurs with delta output:
+Does not support the following elements, because a few problems occur with delta output:
   - Formula
 
