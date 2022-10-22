@@ -3,11 +3,9 @@ encoder(List delta) {
 
   //! End Loop Implementation
   delta.add({'insert': ' '});
-
   for (var element in delta) {
     //! Embedded Implementation
-    if (element['insert'].runtimeType is Map<String, dynamic>) {
-      //~ Image Implementation
+    if (element['insert'] is Map<String, dynamic>) {
       if (element['insert'].containsKey('image')) {
         String imageLink = element['insert']['image'].toString();
         if (element.containsKey('attributes')) {
@@ -17,15 +15,20 @@ encoder(List delta) {
               .replaceAll(':', "='")
               .replaceAll(';', "'")
               .toLowerCase();
-          html.write("<img src='$imageLink' $style>");
+          html.write('<img src="$imageLink" $style>');
         } else {
-          html.write("<img src='$imageLink'>");
+          html.write('<img src="$imageLink">');
         }
 
         //~ Video Implementation
       } else if (element['insert'].containsKey('video')) {
-        String videoLink = element['insert']['image'].toString();
-        html.write("<embed type='video/webm' src='$videoLink'>");
+        String videoLink = element['insert']['video'].toString();
+
+        html.write(
+            '<video width="360" controls><source src="$videoLink" type="video/mp4"></video>');
+      } else if (element['insert'].containsKey('line')) {
+        html.write(
+            '<hr style="height:1px;border-width:0;background-color:#E4E4EB">');
       }
     } else {
       //! Rich Text Implementation
@@ -87,6 +90,9 @@ encoder(List delta) {
                     currentText =
                         "<span style='font-size:150%'>$currentText</span>";
                     break;
+                  default:
+                    currentText =
+                        "<span style='font-size:${value}px'>$currentText</span>";
                 }
                 break;
 
