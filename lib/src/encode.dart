@@ -7,7 +7,6 @@ encoder(List delta) {
   for (var element in delta) {
     //! Embedded Implementation
     if (element['insert'] is Map<String, dynamic>) {
-
       //~ Image Implementation
       if (element['insert'].containsKey('image')) {
         String imageLink = element['insert']['image'].toString();
