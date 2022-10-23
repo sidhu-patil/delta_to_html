@@ -39,11 +39,10 @@ Currently, these elements are supported:
   - Code Block
   - Indent
   - Text Direction
-
+  - Line
 
 ## Not Supported
 Does not support the following elements, because flutter_quill does not support them:
-  - Horizontal Rule
   - Superscript/Subscript
 
 

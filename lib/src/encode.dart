@@ -6,7 +6,8 @@ encoder(List delta) {
 
   for (var element in delta) {
     //! Embedded Implementation
-    if (element['insert'].runtimeType is Map<String, dynamic>) {
+    if (element['insert'] is Map<String, dynamic>) {
+
       //~ Image Implementation
       if (element['insert'].containsKey('image')) {
         String imageLink = element['insert']['image'].toString();
@@ -24,8 +25,12 @@ encoder(List delta) {
 
         //~ Video Implementation
       } else if (element['insert'].containsKey('video')) {
-        String videoLink = element['insert']['image'].toString();
+        String videoLink = element['insert']['video'].toString();
         html.write("<embed type='video/webm' src='$videoLink'>");
+
+        //~ Line Implementation
+      } else if (element['insert'].containsKey('line')) {
+        html.write("<hr>");
       }
     } else {
       //! Rich Text Implementation
@@ -86,6 +91,10 @@ encoder(List delta) {
                   case "huge":
                     currentText =
                         "<span style='font-size:150%'>$currentText</span>";
+                    break;
+                  default:
+                    currentText =
+                        "<span style='font-size:${value}px'>$currentText</span>";
                     break;
                 }
                 break;

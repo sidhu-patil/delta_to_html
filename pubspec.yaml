@@ -1,15 +1,13 @@
 name: delta_to_html
-version: 0.2.0
+version: 0.2.1
 
 description: This library helps you to convert Delta to HTML.
 homepage: https://github.com/secanonm/delta_to_html
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.12.0 <3.3.4"
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-
-  

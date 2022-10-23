@@ -1,3 +1,7 @@
+## 0.2.1
+- Add Support of `Line` Elements.
+- Fixed Bugs.
+
 ## 0.2.0
 - Stable Version.
 
@@ -15,8 +19,8 @@
 - Remove Temporary Support of `Header`, `List`, `Blockquote`, `Code Block`, `Horizontal Rule` Elements. These all block elements which create new line thats way we currently remove these all but don't worry. We add these support with high performance as soon as possible
 
 ## 0.1.2
-- update dependencies.
-- fixed bugs
+- Update dependencies.
+- Fixed bugs
 
 ## 0.0.3
 - Change <p> tag to <span>
