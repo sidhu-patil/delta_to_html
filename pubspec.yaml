@@ -1,7 +1,7 @@
 name: delta_to_html
-version: 0.2.1
+version: 0.2.2
 
-description: This library helps you to convert Delta to HTML.
+description: This lightweight package helps you convert Delta to HTML. HTML Most tags are supported in this package.
 homepage: https://github.com/secanonm/delta_to_html
 
 environment:

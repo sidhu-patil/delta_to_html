@@ -1,10 +1,22 @@
 encoder(List delta) {
   StringBuffer html = StringBuffer();
-
   //! End Loop Implementation
   delta.add({'insert': ' '});
+  List blockElements = [
+    'header',
+    'align',
+    'direction',
+    'list',
+    'blockquote',
+    'code-block',
+    'indent'
+  ];
+
+  int listIndex = -1;
 
   for (var element in delta) {
+    listIndex++;
+
     //! Embedded Implementation
     if (element['insert'] is Map<String, dynamic>) {
       //~ Image Implementation
@@ -38,15 +50,6 @@ encoder(List delta) {
       if (!element.containsKey('attributes')) {
         html.write(element['insert'].toString());
       } else {
-        List blockElements = [
-          'header',
-          'align',
-          'direction',
-          'list',
-          'blockquote',
-          'code-block',
-          'indent'
-        ];
         String currentText = element['insert'].toString();
         Map currentAttributeMap = element['attributes'] as Map;
 
@@ -129,7 +132,6 @@ encoder(List delta) {
             html.clear();
             html.write(dumpyString);
           }
-
           currentAttributeMap.forEach((key, value) {
             switch (key.toString()) {
               case "header":
@@ -153,14 +155,34 @@ encoder(List delta) {
                 currentText = "<blockquote>$blockString</blockquote>";
                 break;
 
-              case "indent":
-                currentText = "<p>${'&emsp;' * value} $blockString</p>";
-                break;
-
               case "list":
                 switch (value) {
                   case "ordered":
-                    currentText = "<ol><li>$blockString</li></ol>";
+                    bool isStart = true, isEnd = true;
+
+                    try {
+                      isStart = delta[listIndex - 2]['attributes']['list'] !=
+                          "ordered";
+                      // ignore: empty_catches
+                    } catch (e) {}
+                    try {
+                      isEnd = delta[listIndex + 2]['attributes']['list'] !=
+                          "ordered";
+                      // ignore: empty_catches
+                    } catch (e) {}
+
+                    if (isStart && isEnd) {
+                      currentText = "<ol><li>$blockString</li></ol>";
+                    } else {
+                      if (isStart) {
+                        currentText = "<ol><li>$blockString</li>";
+                      } else if (isEnd) {
+                        currentText = "<li>$blockString</li></ol>";
+                      } else {
+                        currentText = "<li>$blockString</li>";
+                      }
+                    }
+
                     break;
                   case "bullet":
                     currentText = "<ul><li>$blockString</li></ul>";
@@ -174,6 +196,10 @@ encoder(List delta) {
                         "<input type='checkbox' ><label>$blockString</label><br>";
                     break;
                 }
+                break;
+
+              case "indent":
+                currentText = "${'&emsp;' * value} $blockString";
                 break;
             }
           });

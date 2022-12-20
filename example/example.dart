@@ -1,8 +1,13 @@
-// ignore_for_file: avoid_print
+import 'package:delta_to_html/delta_to_html.dart';
 
-import '../lib/delta_to_html.dart';
+void main() async {
+  /* Using Flutter_Quill Delta Controller
+  
+  List delta = deltaController.document.toDelta().toJson();
+  print(DeltaToHTML.encodeJson(delta);
 
-void main() {
+  */
+
   List delta = [
     {
       "insert": "Welcome",
@@ -18,5 +23,6 @@ void main() {
     },
     {"insert": "\n"}
   ];
+  // ignore: avoid_print
   print(DeltaToHTML.encodeJson(delta));
 }
