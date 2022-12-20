@@ -1,3 +1,6 @@
+## 0.2.2
+- Fixed order list sequence problem.
+
 ## 0.2.1
 - Add Support of `Line` Elements.
 - Fixed Bugs.
